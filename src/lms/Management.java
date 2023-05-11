@@ -145,11 +145,12 @@ class Management {
 
         }
     }
+
     public void unpaidFee() {
         System.out.println("Unpaid Fee:");
         System.out.println("----------------------------");
         float UnpaidFee = 0;
-        System.out.printf("%-15s %-20s %-15s %-12\n", "Course Code", "Fee Per Credit Hour", "Credit Hours", "TotalFee");
+        System.out.printf("%-15s %-20s %-15s %-12s\n", "Course Code", "Fee Per Credit Hour", "Credit Hours", "TotalFee");
 
         for (int i = 0; i < studentList.size(); i++) {
             Student student = studentList.get(i);
@@ -161,7 +162,7 @@ class Management {
 
                 if (!isPaid) {
                     String courseCode = fee.substring(0, fee.indexOf(":"));
-                    Course course = addCourse(courseCode);
+                    Course course = findCourse(courseCode);
                     float feePerCreditHour = course.getFeePerCreditHour();
                     int creditHours = course.getCreditHours();
                     float totalFee = feePerCreditHour * creditHours;
@@ -175,6 +176,16 @@ class Management {
         System.out.println("----------------------------");
         System.out.printf("Total Unpaid Fee: %.2f", UnpaidFee);
     }
+
+    private Course findCourse(String courseCode) {
+        for (Course course : CourseList) {
+            if (course.getCourseCode().equals(courseCode)) {
+                return course;
+            }
+        }
+        return null;
+    }
+
     public void init_Teacher(String tName, float salary){
         Teacher teacher=new Teacher(tName, salary);
         teacherList.add(teacher);
