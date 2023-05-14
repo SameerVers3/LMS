@@ -8,9 +8,12 @@ import java.io.*;
 
 class Management implements Serializable{
     ArrayList<Student> StudentList = new ArrayList<Student>();
+    ArrayList<Marks> MarksList = new ArrayList<>();
     ArrayList<Course> CourseList = new ArrayList<Course>();
-    ArrayList<String> FeeList = new ArrayList<String>();
+    ArrayList<Attendence> AttendenceList = new ArrayList<>();
+    ArrayList<Fees> FeeList = new ArrayList<Fees>();
     ArrayList<Teacher> teacherList= new  ArrayList<Teacher>();
+    private static final long serialVersionUID = 8937440120597790291L;
 
     //addcourse: course object add to arraylist
     public void addCourse(){
@@ -25,8 +28,11 @@ class Management implements Serializable{
         System.out.println("Enter fees per credit hour: ");
         int fees = sc.nextInt();
         CourseList.add(new Course(courseName, courseCode, creditHours, fees));
-
-        System.out.println("New course added: \n" + CourseList.get(CourseList.size()-1).getCourse_name() + "\tCourse code: " +  CourseList.get(CourseList.size()-1).getCourse_code()  +"\tCredit Hours: " + CourseList.get(CourseList.size()-1).getCredit_hrs());
+        System.out.println("\t\tNew course added! \n ------------------------------------------------------------------\n"
+                + "| Course Name: " + CourseList.get(CourseList.size()-1).getCourse_name() + "\t| " +
+                "Course code: " +  CourseList.get(CourseList.size()-1).getCourse_code()  +"\t| Credit Hours: " + CourseList.get(CourseList.size()-1).getCredit_hrs() + " |\n"
+                +"------------------------------------------------------------------\n");
+        AttendenceList.add(new Attendence(CourseList.get(CourseList.size()-1)));
     }
     //addteacher: new teacher object add to teacher arraylist
 
@@ -48,41 +54,7 @@ class Management implements Serializable{
         teacherList.add(new Teacher(name, lname, age, gender,"Teacher", password, salary));
         System.out.println("New teacher added: \n"+ teacherList.get(teacherList.size()-1).getTeacher_name() + teacherList.get(teacherList.size()-1).getT_salary());
     }
-
-    public ArrayList<String> getFeeList() {
-        return FeeList;
-    }
-
-    public void setFeeList(ArrayList<String> feeList) {
-        FeeList = feeList;
-    }
-
-    public ArrayList<Course> getCourseList() {
-        return CourseList;
-    }
-
-    public void setCourseList(ArrayList<Course> courseList) {
-        CourseList = courseList;
-    }
-
-    public ArrayList<Student> getStudentList() {
-        return StudentList;
-    }
-
-    public void setStudentList(ArrayList<Student> studentList) {
-        StudentList = studentList;
-    }
-
-//    public Arraylist<Teacher> getTeacherList() {
-//        return teacherList;
-//    }
-//
-//    public void setTeacherList(Arraylist<Teacher> teacherList) {
-//        this.teacherList = teacherList;
-//    }
-
-    //all details of course to added in table
-    public void ViewCourse(){
+    public void viewCourse(){
         System.out.println("Current course list:");
         System.out.println("---------------------------------------------------------------------------");
         System.out.printf("| %-10s | %-15s | %-5s | %-10s | %-25s |\n", "Course Code", "Course Name", "Credit Hours", "Fees", "Emrolled Students");
@@ -93,14 +65,14 @@ class Management implements Serializable{
         System.out.println("--------------------------------------------------------------------------");
     }
 
-    //edit course by finding index then removing previous and adding new
+
     public void editCourse(String courseCode) {
         Scanner sc= new Scanner(System.in);
         int index=0, found=0;
         for (Course i: CourseList){
-            if (i.getCourse_code().equalsIgnoreCase(courseCode)){
+            if (i.getCourse_code() != null && i.getCourse_code().equalsIgnoreCase(courseCode)){
                 System.out.println("What do you want to change ? ");
-                System.out.println("1. Course code \n2. Course name\n3. Credit hours \t4. feesPerCredit");
+                System.out.println("1. Course code \n2. Credit hours \n3. feesPerCredit");
                 int choice= sc.nextInt();
                 switch(choice){
                     case(1) -> {
@@ -110,18 +82,12 @@ class Management implements Serializable{
                         CourseList.add(editedCourse);
                         CourseList.remove(index);
                     } case (2) -> {
-                        System.out.println("Enter ne Name: ");
-                        String name = sc.next();
-                        Course editedCourse = new Course(i, choice, name);
-                        CourseList.add(editedCourse);
-                        CourseList.remove(index);
-                    } case (3) -> {
                         System.out.println("Enter new Credit hours: ");
                         int credit = sc.nextInt();
                         Course editedCourse = new Course(i, choice, credit);
                         CourseList.add(editedCourse);
                         CourseList.remove(index);
-                    } case (4) -> {
+                    } case (3) -> {
                         System.out.println("Enter new Fees per credit: ");
                         int fees = sc.nextInt();
                         Course editedCourse = new Course(i, choice, fees);
@@ -138,22 +104,22 @@ class Management implements Serializable{
         }
         if (found==0){
             System.out.println("Course Not Found");
+        } else{
+            System.out.println("Edited scuccessfully");
         }
-//        int index=CourseList.indexOf(courseCode);
-//        if (index!=-1){
-//            CourseList.set(index,newCourse);
-//            System.out.println("Course Updated!");
-//        }
-//        else {
-//            System.out.println("Course not found!");
-//        }
     }
+
+
+
+
     //remove course through index
     public void removeCourse(String courseCode) {
         int j=0, check=0, check2=0; // j is index and check is to find if the course is in the list or not
         for (Course i: CourseList) {
             if (i.getCourse_code().equalsIgnoreCase(courseCode)) {
                 CourseList.remove(j); // if course code matches then the course is dropped at that index
+                AttendenceList.get(j).deleteFile(i);
+                AttendenceList.remove(j);
                 check++;
                 break;
             }
@@ -173,184 +139,121 @@ class Management implements Serializable{
             }
             iStudent++;
         }
-        // conditions for check
-        if (check > 0 && stCheck > 0){
-            System.out.println("Course deleted successfully");
-        }
-        else {
-            System.out.println("Course not found");
-        }
-
-//        int index = CourseList.indexOf(courseCode);
-//        if (index != -1) {
-//            CourseList.remove(index);
-//            System.out.println("Course removed!");
-//        } else {
-//            System.out.println("Course not available!");
-//        }
     }
     public void viewFeeStructure(){
-        System.out.println("Displaying Fee Structure: ");
-        System.out.printf("| %-20s | %-5s | %-10s | %-10s |\n", "Course", "Credit Hours", "Fee", "Total Fee");
+        System.out.println("\t\tDisplaying Fee Structure: ");
+        System.out.println("--------------------------------------------------------");
+        System.out.printf("| %-10s | %-10s | %-10s | %-10s |\n", "Course", "Credit Hours", "Fee", "Total Fee");
+        System.out.println("--------------------------------------------------------");
         for (Course i: CourseList){
-            System.out.printf("%-2s %-5d %-10d %-10d\n", i.getCourse_code(), i.getCredit_hrs(), i.getFeesPerCredit(), (i.getCredit_hrs()*i.getFeesPerCredit()));
+            System.out.printf("| %-10s | %-10d | %-10d | %-10d |\n", i.getCourse_code(), i.getCredit_hrs(), i.getFeesPerCredit(), (i.getCredit_hrs()*i.getFeesPerCredit()));
         }
 
-//        for (int i = 0; i < CourseList.size(); i++) {
-//            Course course = CourseList.get(i);
-//            int creditHours = course.();
-//            float fee = Float.parseFloat(FeeList.get(i));
-//            float totalFee = creditHours * fee;
-//            System.out.printf("%-2s %-5d %-10.2f %-10.2f\n", course.getCourseCode(), creditHours, fee, totalFee);
-//        }
+        System.out.println("---------------------------------------------------------------");
 
     }
-    //ffes, new fees, course code initialize, for eac: index find of course code, change course ffes per ch/ index removed, .add new fees
-
-
     public void editFee() {
-        Scanner sc = new Scanner(System.in);
         viewFeeStructure();
+        Scanner sc= new Scanner(System.in);
         System.out.println("Select a course to edit fees for: ");
         String courseCode = sc.next();
-
         int index=0, found=0;
         for (Course i: CourseList){
-            if (i.getCourse_code().equalsIgnoreCase(courseCode)){
-                System.out.println("Enter the new fee amount: ");
-                int fee = sc.nextInt();
-                if (fee>0){
-                    Course editedCourse = new Course(i, 4, fee);
-                    CourseList.add(editedCourse);
-                    System.out.println("Fee updated for " + CourseList.get(index).getCourse_code());
-                    CourseList.remove(index);
-                } else{
-                    System.out.println("Invalid Amount!");
-                    break;
-                }
+            if (i.getCourse_code() != null && i.getCourse_code().equalsIgnoreCase(courseCode)){
+                System.out.println("Enter new Fees per credit: ");
+                int fees = sc.nextInt();
+                Course editedCourse = new Course(i, 3, fees);
+                CourseList.add(editedCourse);
+                CourseList.remove(index);
                 found++;
                 break;
             }
             index++;
         }
-        if (!(found==0)){
-            System.out.println("Course Not Found");
+        if (found==0){
+            System.out.println("Fees Edited Successfully!");
+        } else{
+            System.out.println("Edited scuccessfully");
         }
+    }
 
+    public void viewStudentList(){
+        System.out.println("\t\tStudent List");
+        System.out.printf("| %-15s | %-15s | %-15s | %-15s | %-15s |\n", "First Name", "Last Name", "ID", "Age", "Courses Enrolled");
+        System.out.println("----------------------------------------------------------------------------------------------");
+        for (Student st: StudentList){
+            System.out.printf("| %-15s | %-15s | %-15s | %-15s | %-15s |\n", st.getFirstName(), st.getLastName(), st.getStudentID(), st.getAge(), st.course.size());
+        }
+        System.out.println("----------------------------------------------------------------------------------------------");
+    }
 
-//        boolean found = false;
-//        for (int i = 0; i < CourseList.size(); i++) {
-//            if (CourseList.get(i).getCourseCode().equals(courseCode)) {
-//                System.out.println("Enter the new fee amount: ");
-//                float newFee = sc.nextFloat();
-//                CourseList.get(i).setFeePerCreditHour(newFee);//ye attribute Fee ka
-//                System.out.println("Fee updated for " + CourseList.get(i).getCourseName());
-//                found = true;
-//                break;
-//            }
-//        }
-//        if (!found) {
-//            System.out.println("Course not found!");
-//        }
-//        System.out.println("Updated Fee Structure per Credit Hour");
-//        System.out.println("------------------------------------------------");
-//        System.out.printf("%-20s %-5s %-10s \n", "Course", "Credit Hours", "Fee");
-//        for (int i = 0; i < CourseList.size(); i++) {
-//            System.out.printf("%-2s %-5d %-10.2f \n", course.getCourseCode(), creditHours, fee);
-//
-//        }
+    public void viewTeacherList(){
+        System.out.println("\t\tTeacher List");
+        System.out.printf("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s |\n", "First Name", "Last Name", "Age", "Gender", "Salary", "Courses Assigned", "password");
+        System.out.println("----------------------------------------------------------------------------------------------------");
+        for (Teacher t: teacherList){
+            System.out.printf("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s | %-15s |\n", t.getFirstName(), t.getLastName(), t.getAge(), t.getGender(), t.getT_salary(), t.course.size(), t.getTeacher_password());
+        }
+        System.out.println("----------------------------------------------------------------------------------------------");
     }
 
     public void unpaidFee() {
-        System.out.println("Unpaid Fee: ");
+        System.out.println("\t\tFees Summary");
         System.out.printf("| %-15s | %-20s | %-20s | %-15s | %-15s | %-25s |\n", "Course Code", "Student Count", "Fee Per Credit Hour", "Credit Hours", "Per Course", "Total Fees", "Total Paid fees");
         System.out.println("----------------------------------------------------------------------------------------------");
 
-        int paid=0, totalPaid=0, total=0, i=0, j=0;
-        for (Course c: CourseList){
-            j=0;
-            for (Student st: StudentList){
-                if( c.getCourse_code().equalsIgnoreCase(st.course.get(j).getCourse_code())){
-                    paid += st.fees.get(j).getPaidFees();
-                    total += st.fees.get(j).getTotalFees();
+        int paid = 0, totalPaid = 0, total = 0, i = 0, j = 0;
+        for (Course c : CourseList) {
+            j = 0;
+            if (!StudentList.isEmpty()) {
+                for (Student st : StudentList) {
+                    if (!st.course.isEmpty()) {
+                        if (j < st.course.size() && c != null && c.getCourse_code() != null && c.getCourse_code().equalsIgnoreCase(st.course.get(j).getCourse_code())) {
+                            paid += st.fees.get(j).getPaidFees();
+                            total += st.fees.get(j).getTotalFees();
+                        }
+                    }
+
+                    j++;
                 }
-                j++;
+                totalPaid += paid;
+                if(c != null) {
+                    System.out.printf("| %-15s | %-20s | %-20s | %-15s | %-15s | %-25s |\n", c.getCourse_code(), c.student.size(), c.getFeesPerCredit(), c.getCredit_hrs(), (c.getFeesPerCredit() * c.getCredit_hrs()), total, totalPaid);
+                    i++;
+                }
+                paid = 0;
+                total = 0;
             }
-            totalPaid += paid;
-            System.out.printf("| %-15s | %-20s | %-20s | %-15s | %-15s | %-25s |\n", c.getCourse_code(), c.student.size(), c.getFeesPerCredit(), c.getCredit_hrs(), (c.getFeesPerCredit()*c.getCredit_hrs()), total, totalPaid);
-            i++;
-            paid=0;
-            total=0;
         }
 
         System.out.println("-----------------------------------------------------------------------");
     }
-//        float UnpaidFee = 0;
-//        System.out.printf("%-15s %-20s %-15s %-12s\n", "Course Code", "Fee Per Credit Hour", "Credit Hours", "TotalFee");
-//
-//
-//        for (int i = 0; i < studentList.size(); i++) {
-//            Student student = studentList.get(i);
-//            ArrayList<String> Fee = student.getFees();
-//
-//            for (int j = 0; j < Fee.size(); j++) {
-//                String fee = Fee.get(j);
-//                boolean isPaid = fee.contains("Paid");
-//
-//                if (!isPaid) {
-//                    String courseCode = fee.substring(0, fee.indexOf(":"));
-//                    Course course = findCourse(courseCode);
-//                    float feePerCreditHour = course.getFeePerCreditHour();
-//                    int creditHours = course.getCreditHours();
-//                    float totalFee = feePerCreditHour * creditHours;
-//
-//                    UnpaidFee += totalFee;
-//
-//                    System.out.printf("%-15s %-20.2f %-15d %-10.2f", courseCode, feePerCreditHour, creditHours, totalFee);
-//                }
-//            }
-//        }
-//        System.out.println("----------------------------");
-//        System.out.printf("Total Unpaid Fee: %.2f", UnpaidFee);
-//    }
 
-//    private Course findCourse(String courseCode) {
-//        for (Course course : CourseList) {
-//            if (course.getCourseCode().equals(courseCode)) {
-//                return course;
-//            }
-//        }
-//        return null;
-//    }
+    public int findCourse(String courseCode) {
+        int index = 0;
+        for (Course i : CourseList) {
+            if (i.getCourse_code() != null && i.getCourse_code().equalsIgnoreCase(courseCode))
+                {
+                    return index;
+                }
+                index++;
+            }
+        return -1;
 
-//    public void init_Teacher(String tName, float salary){
-//        Teacher teacher=new Teacher(tName, salary);
-//        teacherList.add(teacher);
-//        try{
-//            FileOutputStream fos = new FileOutputStream("Teacher.txt", true);
-//            ObjectOutputStream oos = new ObjectOutputStream(fos);
-//            oos.writeObject(teacher);
-//            oos.close();
-//            fos.close();
-//        }catch (IOException e){
-//            e.printStackTrace();
-//        }
-//    }
+    }
 
+    public int findTeacher(String name) {
+        int index = 0;
+        for (Teacher i : teacherList) {
+            if (i.getTeacher_name() != null && i.getTeacher_name().equalsIgnoreCase(name))
+            {
+                return index;
+            }
+            index++;
+        }
+        return -1;
 
-//    public void init_Student(String StudentID, ArrayList<String> courseList) {
-//        Student student = new Student(StudentID, courseList);
-//        StudentList.add(student.toString());
-//        try {
-//            FileOutputStream fos = new FileOutputStream("Student.txt", true);
-//            ObjectOutputStream oos = new ObjectOutputStream(fos);
-//            oos.writeObject(student);
-//            oos.close();
-//            fos.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    }
 
     public void addStudent(){
         Scanner sc = new Scanner(System.in);
@@ -363,9 +266,7 @@ class Management implements Serializable{
         System.out.println("Enter Gender: ");
         String gender = sc.next();
         StudentList.add(new Student(name, lname, age, gender, "student"));
+        MarksList.add(new Marks(StudentList.get(StudentList.size()-1)));
         System.out.println("Student added successfully!! ");
     }
-
-//    public void CheckFees() {//}
-
 }

@@ -1,6 +1,8 @@
 package lms;
 
-public abstract class person {
+import java.io.Serializable;
+
+public abstract class person implements Serializable{
     protected String firstName;
     protected String lastName;
     protected int age;
@@ -15,6 +17,9 @@ public abstract class person {
         this.designation = designation;
     }
 
+    public person(){
+
+    }
     public String getFirstName() {
         return firstName;
     }
@@ -57,16 +62,10 @@ public abstract class person {
 }
 
 interface std{
-    abstract void registerCourse(Course c); // function to add course to the student object
-    abstract void dropCourse(Course c); // function to drop the course from the student object
-//    abstract void viewAttendence(Course c); // function to view the attendence for a given course if student has not enrolled in the course print the appropriate msg
-//    abstract void detailedAttendence(Course c); // function to view detailed attendence for a given course, if nnot enrolled then print appropriate message
-//    abstract void attendence();  // function to view all the attendence of the course the student enrolled in
+    abstract boolean registerCourse(Course c); // function to add course to the student object
+    abstract boolean dropCourse(Course c); // function to drop the course from the student objec
     abstract void checkFees(); // function to check the fees for the student according to course enrolled and charges per credit hour;
     abstract void payFees(int amount, String courseCode); // Will be used to pay fees
     abstract void viewGrade(Course c); //used to view the grade for the perticular course if any;
     abstract void transcript(); // Print the transcript for the student
-//    abstract void gradeChangeRequest(); //make a grade change request
-
-    // all the data should be stored in file
 }

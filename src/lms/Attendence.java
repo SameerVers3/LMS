@@ -5,6 +5,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class Attendence implements Serializable{
+
+    public Attendence(Course course){
+        this.createFile(course);
+    }
     public void createFile(Course course){
         try{
             File f = new File(course.getCourse_name()+" Attendance"+".csv");
@@ -15,6 +19,15 @@ public class Attendence implements Serializable{
             bw.close();
 
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void deleteFile(Course course){
+        try{
+            File f = new File(course.getCourse_name()+" Attendance"+".csv");
+            f.delete();
+        }catch (Exception e){
             throw new RuntimeException(e);
         }
     }
@@ -42,7 +55,7 @@ public class Attendence implements Serializable{
             String buffer;
             while ((buffer = br.readLine()) != null) {
                 String[] parts = buffer.split(",");
-                if (parts[0].equalsIgnoreCase(student.firstName)) {
+                if (parts[1].equalsIgnoreCase(student.firstName)) {
                     System.out.println(buffer);
                 }
 
