@@ -34,6 +34,7 @@ class Management implements Serializable{
                 +"------------------------------------------------------------------\n");
         AttendenceList.add(new Attendence(CourseList.get(CourseList.size()-1)));
     }
+
     //addteacher: new teacher object add to teacher arraylist
 
     public void addTeacher(){

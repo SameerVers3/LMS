@@ -66,6 +66,4 @@ interface std{
     abstract boolean dropCourse(Course c); // function to drop the course from the student objec
     abstract void checkFees(); // function to check the fees for the student according to course enrolled and charges per credit hour;
     abstract void payFees(int amount, String courseCode); // Will be used to pay fees
-    abstract void viewGrade(Course c); //used to view the grade for the perticular course if any;
-    abstract void transcript(); // Print the transcript for the student
 }

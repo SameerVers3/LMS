@@ -43,7 +43,7 @@ class Student extends person implements std, Serializable{
                 this.course.add(c);
                 this.fees.add(new Fees(c.getCourse_code(), c.getCourse_name(),this.studentID , this.firstName, c.getCredit_hrs(), c.getFeesPerCredit()));
                 creditEnrolled+=c.getCredit_hrs();
-
+                System.out.println("Enrolled Successfully!");
                 return true;
             }
             else {
@@ -65,7 +65,6 @@ class Student extends person implements std, Serializable{
                 course.remove(j); // if course code matches then the course is dropped at that index
                 fees.remove(j);
                 creditEnrolled -= c.getCredit_hrs();
-
                 check++;
                 return true;
             }
@@ -134,18 +133,6 @@ class Student extends person implements std, Serializable{
             throw new RuntimeException(e);
         }
     }
-    public void viewGrade(Course c){
-        for (Course i: course){
-            if (i.getCourse_code().equalsIgnoreCase(c.getCourse_code())){
-//                c.checkGrade();
-                System.out.println("Something");
-            }
-        }
-    }
-    public void transcript(){
-        // code where transcript is printed by looping through the whole arraylist
-    }
-
     public boolean findCourse(Course c){
         int found=0;
         for (Course i: course){

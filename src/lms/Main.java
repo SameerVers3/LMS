@@ -169,7 +169,7 @@ public class Main {
                                             int in =0, f=0;
                                             for (Student st: m.StudentList){
                                                 if (st.getStudentID() == id){
-                                                    m.MarksList.get(ind).display(st);
+                                                    m.AttendenceList.get(count).showAttendance(m.CourseList.get(ind), st);
                                                     f++;
                                                     break;
                                                 }
@@ -234,16 +234,34 @@ public class Main {
                                             System.out.println("Student not Found");
                                         }
                                     }
-                                    case(6)->
+                                    case (6)->
                                     {
-                                            chStudent=8;
+                                        System.out.println("Enter Course code: ");
+                                        String code = sc.next();
+                                        int ind = m.findCourse(code);
+                                        if (ind >=0 ){
+                                            System.out.println("Enter Amount: ");
+                                            int amount = sc.nextInt();
+                                            m.StudentList.get(index).payFees(amount, code);
+                                        }
+                                        else{
+                                            System.out.println("Course not found! ");
+                                        }
+                                    }
+                                    case(7)->
+                                    {
+                                        m.StudentList.get(index).checkFees();
                                     }
 
-                                    case(7) ->
+
+                                    case(8)->
+                                    {
+                                            chStudent=10;
+                                    }
+                                    case(9) ->
                                     {
                                          System.exit(0);
                                     }
-
                                 }
                             }
                             chStudent=0;
@@ -358,7 +376,7 @@ public class Main {
                                                     } while (mid1>15);
 
                                                     do {
-                                                        System.out.println("Enter Mid 1 marks: ");
+                                                        System.out.println("Enter Mid 2 marks: ");
                                                         mid2 = sc.nextInt();
                                                         m.MarksList.get(in).setMid2_marks(mid2, m.StudentList.get(in), m.CourseList.get(ind));
                                                     } while (mid2>15);
@@ -367,19 +385,19 @@ public class Main {
                                                         System.out.println("Enter Assignment marks: ");
                                                         assign = sc.nextInt();
                                                         m.MarksList.get(in).setAssignments_marks(assign, m.StudentList.get(in), m.CourseList.get(ind));
-                                                    } while (assign >15);
+                                                    } while (assign >10);
 
                                                     do {
                                                         System.out.println("Enter Quiz marks: ");
                                                         quiz = sc.nextInt();
                                                         m.MarksList.get(in).setQuiz_marks(quiz, m.StudentList.get(in), m.CourseList.get(ind));
-                                                    } while (quiz>15);
+                                                    } while (quiz>10);
 
                                                     do {
                                                         System.out.println("Enter Final marks: ");
                                                         fin = sc.nextInt();
                                                         m.MarksList.get(in).setFinal_marks(fin, m.StudentList.get(in), m.CourseList.get(ind));
-                                                    } while(fin>15);
+                                                    } while(fin>50);
 
                                                     System.out.println("Marks added successfully! ");
                                                     f++;
@@ -440,8 +458,8 @@ public class Main {
     public static void mainMenu(){
         System.out.println("\t\t\t\tWelcome to THE FLEX");
         System.out.println("\t\t-------------------------------------");
-        System.out.println("\n\t\t1. Admin\n\t\t2. Stud1" +
-                "ent\n\t\t3. Teachern\n\t\t4. Exit");
+        System.out.println("\n\t\t1. Admin\n\t\t2. Student" +
+                "\n\t\t3. Teacher\n\t\t4. Exit");
         System.out.println("\t\t-->> : ");
     }
 
@@ -454,7 +472,7 @@ public class Main {
         System.out.println("5. Assign Course to Teacher");
         System.out.println("6. View Course List");
         System.out.println("7. View Student List");
-        System.out.println("8. View Tecaher List");
+        System.out.println("8. View Teacher List");
         System.out.println("9. Remove Course");
         System.out.println("10. View Fee Structure");
         System.out.println("11. Edit Fees");
@@ -470,9 +488,10 @@ public class Main {
         System.out.println("3. Add Course");
         System.out.println("4. Drop Course");
         System.out.println("5. Transcript");
-        System.out.println("6. Transcript");
-        System.out.println("7. LogOut");
-        System.out.println("8. Exit");
+        System.out.println("6. Pay fees");
+        System.out.println("7. Fees Summary");
+        System.out.println("8. LogOut");
+        System.out.println("9. Exit");
     }
 
     public static void teacherMenu(){
